@@ -11,5 +11,5 @@ window = InWindow "Game of Life" (screenWidth, screenHeight) (100, 100)
 backgroundColor = makeColor 0 0 0 255
 
 main :: IO ()
-main = play window backgroundColor 30 "" gameAsPicture transformGame (const id)
+main = play window backgroundColor 30 initialGame gameAsPicture transformGame (const id)
 
