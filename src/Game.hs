@@ -28,6 +28,8 @@ screenWidth = cellWidth * Game.cols
 screenHeight :: Int
 screenHeight = cellHeight * Game.rows
 
+isCellFilled :: Board -> (Int, Int) -> Bool
+isCellFilled board cellCoord = board ! cellCoord
 
 isCoordCorrect = inRange ((0, 0), (rows - 1, cols - 1))
 
@@ -40,7 +42,7 @@ initialGame = Game { gameState = Placing
 flipStartCell :: Game -> (Int, Int) -> Game
 flipStartCell game cellCoord
     | isCoordCorrect cellCoord = 
-        game { gameBoard = board // [(cellCoord, True)] }
+        game { gameBoard = board // [(cellCoord, not (isCellFilled board cellCoord))] }
     | otherwise = game
     where board = gameBoard game
 
