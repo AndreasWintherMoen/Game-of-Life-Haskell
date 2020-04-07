@@ -46,6 +46,12 @@ flipStartCell game cellCoord
     | otherwise = game
     where board = gameBoard game
 
+switchState :: Game -> Game
+switchState game = 
+    case gameState game of 
+        Placing -> game { gameState = Simulating }
+        Simulating -> game {gameState = Placing }
+
 mousePosAsCellCoord :: (Float, Float) -> (Int, Int)
 mousePosAsCellCoord (x, y) = ( floor ((y + (fromIntegral screenHeight * 0.5)) / fromIntegral cellHeight)
                              , floor ((x + (fromIntegral screenWidth * 0.5)) / fromIntegral cellWidth)
@@ -53,6 +59,7 @@ mousePosAsCellCoord (x, y) = ( floor ((y + (fromIntegral screenHeight * 0.5)) / 
 
 
 transformGame :: Event -> Game -> Game
+transformGame (EventKey (SpecialKey KeyEnter) Up _ _) game = switchState game 
 transformGame (EventKey (MouseButton LeftButton) Up _ mousePos) game =
     case gameState game of 
         Placing -> flipStartCell game $ mousePosAsCellCoord mousePos
