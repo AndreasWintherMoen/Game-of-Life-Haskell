@@ -89,12 +89,25 @@ mousePosAsCellCoord (x, y) = ( floor ((y + (fromIntegral screenHeight * 0.5)) / 
 sumCells :: [Cell] -> Int
 sumCells xs = sum [1 | x <- xs, x] 
 
+isSameCell :: (Int, Int) -> (Int, Int) -> Bool
+isSameCell a b = if fst a == fst b && snd a == snd b then True else False
+
 numNeighbors :: Board -> (Int, Int) -> Int
-numNeighbors board (x, y) = sumCells [board ! (i, j) | i <- [x-1..x+1], j <- [y-1..y+1], isCellInBounds (i, j)]
+numNeighbors board (x, y) = 
+    sumCells [board ! (i, j) 
+        | i <- [x-1..x+1], j <- [y-1..y+1], 
+        isCellInBounds (i, j), not (isSameCell (x, y) (i, j))]
+
+shouldFillCell :: Board -> (Int, Int) -> Bool
+shouldFillCell board cellCoord 
+    | nCount == 3 = True
+    | nCount == 2 && isCellFilled board cellCoord = True
+    | otherwise = False
+        where nCount = numNeighbors board cellCoord
 
 simulateBoard :: Board -> Board
 -- simulateBoard board = board
-simulateBoard board = array indexRange $ concatMap (\x -> [(x, not (isCellFilled board x))]) (range indexRange)
+simulateBoard board = array indexRange $ concatMap (\x -> [(x, (shouldFillCell board x))]) (range indexRange)
     where indexRange = ((0, 0), (rows, cols))
 
 simulateStep :: Game -> Game
