@@ -7,20 +7,26 @@ import Game
 
 backgroundColor = makeColor 0 0 0 255
 boardGridColor = makeColorI 255 255 255 255
-
-cellWidth :: Int
-cellWidth = 20
-cellHeight :: Int
-cellHeight = 20
-
-screenWidth :: Int
-screenWidth = cellWidth * Game.cols
-screenHeight :: Int
-screenHeight = cellHeight * Game.rows
-
+filledCellColor = makeColorI 240 130 130 255
 
 boardAsPicture :: Board -> Picture
-boardAsPicture _ = pictures [ color boardGridColor $ boardGrid ]
+boardAsPicture board = pictures [ color boardGridColor $ boardGrid
+                            , color filledCellColor $ filledCellsOfBoard board
+                            ]
+
+snapPictureToCell picture (row, column) = translate x y picture
+    where x = fromIntegral column * fromIntegral cellWidth + fromIntegral cellWidth * 0.5
+          y = fromIntegral row * fromIntegral cellHeight + fromIntegral cellHeight * 0.5
+
+filledCell :: Picture
+filledCell = rectangleSolid (fromIntegral cellWidth) (fromIntegral cellHeight)
+
+filledCellsOfBoard :: Board -> Picture
+filledCellsOfBoard board = 
+    pictures
+    $ map (snapPictureToCell filledCell . fst)
+    $ filter (\(_, e) -> e)
+    $ assocs board
 
 boardGrid :: Picture
 boardGrid =
