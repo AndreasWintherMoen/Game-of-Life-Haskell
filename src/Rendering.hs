@@ -5,23 +5,37 @@ import Graphics.Gloss
 
 import Game
 
+backgroundColor = makeColor 0 0 0 255
 boardGridColor = makeColorI 255 255 255 255
 
-boardAsPicture board = pictures [ color boardGridColor $ boardGrid ]
+cellWidth :: Int
+cellWidth = 20
+cellHeight :: Int
+cellHeight = 20
+
+screenWidth :: Int
+screenWidth = cellWidth * Game.cols
+screenHeight :: Int
+screenHeight = cellHeight * Game.rows
+
+
+boardAsPicture :: Board -> Picture
+boardAsPicture _ = pictures [ color boardGridColor $ boardGrid ]
 
 boardGrid :: Picture
 boardGrid =
     pictures
-    $ concatMap (\i -> [ line [ (i * cellWidth, 0.0)
-                              , (i * cellWidth, fromIntegral screenHeight)
+    $ concatMap (\i -> [ line [ (i * fromIntegral cellWidth, 0.0)
+                              , (i * fromIntegral cellWidth, fromIntegral screenHeight)
                               ]
-                       , line [ (0.0,                      i * cellHeight)
-                              , (fromIntegral screenWidth, i * cellHeight)
+                       , line [ (0.0,                      i * fromIntegral cellHeight)
+                              , (fromIntegral screenWidth, i * fromIntegral cellHeight)
                               ]
                        ])
-      [0.0 .. fromIntegral rows]
+      [0.0 .. fromIntegral Game.rows]
 
-gameAsPicture board = translate (fromIntegral screenWidth * (-0.5))
+gameAsPicture :: Game -> Picture
+gameAsPicture game = translate (fromIntegral screenWidth * (-0.5))
                                (fromIntegral screenHeight * (-0.5))
                                frame
-    where frame = boardAsPicture board
+    where frame = boardAsPicture (gameBoard game)
