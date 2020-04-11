@@ -43,10 +43,19 @@ cellWidth = 20
 cellHeight :: Int
 cellHeight = 20
 
+marginTop :: Int
+marginTop = 100
+marginRight :: Int
+marginRight = 0
+marginBottom :: Int
+marginBottom = 0
+marginLeft :: Int
+marginLeft = 0
+
 screenWidth :: Int
-screenWidth = cellWidth * Game.cols
+screenWidth = cellWidth * Game.cols + marginRight + marginLeft
 screenHeight :: Int
-screenHeight = cellHeight * Game.rows
+screenHeight = cellHeight * Game.rows + marginTop + marginBottom
 
 isCellFilled :: Board -> (Int, Int) -> Bool
 isCellFilled board cellCoord = board ! cellCoord
